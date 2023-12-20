@@ -1,0 +1,81 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/fontsSVN/BeVietnamPro-Bold.ttf",
+      "sha1": "53d7858b0a41b20a76bab02013059b2c30d1b1e0"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/BeVietnamPro-Medium.ttf",
+      "sha1": "6e48b8f85dc0ae98dfbae3085ba1f04444fb7886"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/BeVietnamPro-Regular.ttf",
+      "sha1": "c342a98d9c3b4fef5f0b18c7a206287e9325624d"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy Medium Italic.ttf",
+      "sha1": "28408a34a3c21c13bc7108fd98090de696c3c164"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy Medium.otf",
+      "sha1": "858bfba67dcb4788dd9cdb261b707a78e2075334"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy Regular.otf",
+      "sha1": "ed7c84d6f0b3bd4764934704c927122f703f2eef"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Black-Italic.ttf",
+      "sha1": "d284db0b09300708519b9ef87d3c99ac96523d26"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Black.ttf",
+      "sha1": "5fa8094dad3fc9d0d7e343021efe4567e231e2d5"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Bold-Italic.ttf",
+      "sha1": "2259e0fa2620bc89872843727df77cfd2df61192"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Bold.otf",
+      "sha1": "c68db5b3242b9d336a295a0d986009ba0265acbc"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Bold.ttf",
+      "sha1": "294df032890088a883f28bfa29b25140b0910de7"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Medium.ttf",
+      "sha1": "756ea1b720f1f0bcb0eecf3f2ef96c51784f348e"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Regular.ttf",
+      "sha1": "0f078970fa09684928325148edc2bae5081f4bba"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-SemiBold-Italic.ttf",
+      "sha1": "f53393c18f0df68a0588631654da45c4dbdc16ed"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-SemiBold.ttf",
+      "sha1": "7590265d9807958b3346f4f4ef5c04873b97f842"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-XBold-Italic.ttf",
+      "sha1": "2a71aa48df121c4284169f56bf426f0dd03f618e"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-XBold.ttf",
+      "sha1": "c4961713de1e00e75b1ff7de447254df81f531cb"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Xlight-Italic.ttf",
+      "sha1": "313792c189dedf9bc0730dee0442baf40e0ed085"
+    },
+    {
+      "path": "src/assets/fonts/fontsSVN/SVN-Gilroy-Xlight.ttf",
+      "sha1": "d3b3f64dd5b15d7e4b5adf803b423df377569f6c"
+    }
+  ]
+}

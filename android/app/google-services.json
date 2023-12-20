@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "638269121493",
+    "project_id": "triptix-app",
+    "storage_bucket": "triptix-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638269121493:android:a99650487e7bb56406535c",
+        "android_client_info": {
+          "package_name": "com.anonymous.TripTix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTFCNPEpdgH_DK753KU6DPSgwcVOdZSac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638269121493:android:04fb8eac744c5b8806535c",
+        "android_client_info": {
+          "package_name": "com.triptix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTFCNPEpdgH_DK753KU6DPSgwcVOdZSac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
