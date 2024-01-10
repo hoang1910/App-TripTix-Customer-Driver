@@ -115,26 +115,31 @@ export const SelectRoute: React.FC = () => {
         const routeData = data.data.map((item, index) => {
           return {
             ...item,
-            listtripStopDTO: item.listtripStopDTO
+            listtripStopDTO: item.route.listStationInRoute
               .sort((a, b) => {
-                return a.timeComess - b.timeComess;
+                return a.index - b.index;
               })
               .map((stopDTO, index) => {
                 return {
                   id: stopDTO.idStation,
-                  title: stopDTO.stationDTO.name,
+                  title: stopDTO.station.name,
                   type: stopDTO.type,
-                  time: timeStampToUtc(stopDTO.timeComess).format('HH:mm'),
-                  icon: getIconStep(item.listtripStopDTO.length, index),
-                  timeStamp: stopDTO.timeComess,
+                  // time: timeStampToUtc(stopDTO.timeCome).format('HH:mm'),
+                  time: stopDTO.timeCome,
+                  icon: getIconStep(
+                    item.route.listStationInRoute.length,
+                    index,
+                  ),
+                  timeStamp: stopDTO.timeCome,
                   index: index,
-                  costsIncurred: stopDTO.costsIncurred,
-                  desc: stopDTO.stationDTO.address,
+                  costsIncurred: 0,
+                  desc: stopDTO.station.address,
                 };
               }),
-            unitPrice: item.fare / (item.listtripStopDTO.length - 1),
+            unitPrice: 0,
           };
         });
+
         setDataRoute(routeData);
         return;
       }
@@ -150,6 +155,7 @@ export const SelectRoute: React.FC = () => {
       setIsLoading(false);
     }
   };
+  console.log(1111, dataRouteFilter);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -161,7 +167,6 @@ export const SelectRoute: React.FC = () => {
             justifyContent: 'center',
             flexDirection: 'row',
             paddingHorizontal: 5,
-            
           }}>
           <View style={{width: '30%', marginRight: 5, marginVertical: 12}}>
             <DatePicker
@@ -208,7 +213,7 @@ export const SelectRoute: React.FC = () => {
           flex: 1,
           padding: 0,
           zIndex: -1,
-          backgroundColor:'#DEDEDE'
+          backgroundColor: '#DEDEDE',
         }}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={handleGetTrips} />
@@ -224,11 +229,10 @@ export const SelectRoute: React.FC = () => {
                 padding: 10,
                 // borderTopWidth: 1,
                 borderColor: 'gray',
-                backgroundColor: coins >= d.fare ? '#fff' : '#fff7f5',
-                borderRadius:20,
-                marginBottom:5,
-                marginTop:15
-                
+                backgroundColor: '#ffffff',
+                borderRadius: 20,
+                marginBottom: 5,
+                marginTop: 15,
               }}>
               <View
                 style={{
@@ -242,9 +246,9 @@ export const SelectRoute: React.FC = () => {
                     flexDirection: 'row',
                   }}>
                   <Text style={{fontFamily: 'SVN-Gilroy-SemiBold'}}>
-                    {`${timeStampToUtc(d.startTimee).format(
+                    {`${timeStampToUtc(d.departureDateLT).format(
                       'HH:mm',
-                    )} - ${timeStampToUtc(d.endTimee).format('HH:mm')}`}
+                    )} - ${timeStampToUtc(d.endDateLT).format('HH:mm')}`}
                   </Text>
                 </View>
                 <View
@@ -271,7 +275,6 @@ export const SelectRoute: React.FC = () => {
                   {d.subTrip}
                 </Text>
               )}
-              
 
               <Steps
                 data={[
@@ -279,56 +282,28 @@ export const SelectRoute: React.FC = () => {
                   d?.listtripStopDTO[d?.listtripStopDTO.length - 1],
                 ]}
               />
-             <View style={{alignItems: 'flex-start'}}>
-              <View
+              <View style={{alignItems: 'flex-start'}}>
+                <View
                   style={{
                     marginTop: 5,
                     padding: 5,
                     backgroundColor: '#DEDEDE',
                     borderRadius: 15,
-                    
-                    
                   }}>
-                  <Text style={{padding:2, fontSize:15, fontFamily: 'SVN-Gilroy-Medium',color:'black'}}>
-                    {formatPrice(d.fare)} - {CarTypes[d.busDTO.type]} - Còn{' '}
-                    {d.availableSeat} chỗ trống
+                  <Text
+                    style={{
+                      padding: 2,
+                      fontSize: 15,
+                      fontFamily: 'SVN-Gilroy-Medium',
+                      color: 'black',
+                    }}>
+                    {`${CarTypes[d.vehicle?.type]} - Còn ${
+                      d.availableSeat
+                    } ghế trống`}
                   </Text>
                 </View>
               </View>
-              {/* <Text
-                style={{
-                  marginLeft: 35,
-                  marginTop: 10,
-                  fontSize: 16,
-                  color: '#FF8C00',
-                }}>
-                {d.busDTO.description}
-              </Text> */}
             </View>
-            {d.fare > coins && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  padding: 16,
-                }}>
-                <Text style={{color: 'red'}}>
-                  Bạn còn thiếu {formatPrice(d.fare - coins)}
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    marginLeft: 4,
-                    backgroundColor: 'orange',
-                    padding: 4,
-                    borderRadius: 4,
-                  }}
-                  onPress={() => navigation.navigate('TopUp')}>
-                  <Text style={{fontWeight: '700', color: '#fff'}}>
-                    Nạp tiền
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
           </TouchableOpacity>
         ))}
 
