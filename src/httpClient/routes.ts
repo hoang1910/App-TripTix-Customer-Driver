@@ -20,8 +20,8 @@ const routes = {
   trip: {
     getRouteInfo: url.baseUrl + '/route',
     getTrip: url.baseUrl + '/trips',
-    postBookTicket: url.baseUrl + '/bookings',
-    postBookTicketRound: url.baseUrl + '/bookings/round-trip',
+    postBookTicket: url.baseUrl + '/booking',
+    postBookTicketRound: url.baseUrl + '/booking/round-trip',
     getBooking: url.baseUrl + '/bookings',
     cancelBooking: url.baseUrl + '/bookings/cancel',
     feedback: url.baseUrl + '/bookings/vote-star',
@@ -35,6 +35,8 @@ const routes = {
     driverHistory: url.baseUrl + '/trips/trip-finish-cancel-of-driver',
     driverReady: url.baseUrl + '/trips/trip-ready-of-driver',
     checkout: url.baseUrl + '/bookings/status',
+    getSeatUnavailable: url.baseUrl + './trips/find-seat',
+    getTicketPrice: url.baseUrl + '/booking/get-tick-type-of-trip',
   },
   payment: {
     topUp: url.baseUrl + '/payment/create_payment-url',

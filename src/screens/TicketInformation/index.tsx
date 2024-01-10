@@ -32,6 +32,8 @@ export const TicketInformation: React.FC = () => {
       seatSelected,
       routeRoundInfo,
       seatSelectedRound,
+      pricePerSeat,
+      pricePerSeatRound,
     },
     authentication: {userInfo, synchUserInfo},
   } = useStore();
@@ -72,17 +74,11 @@ export const TicketInformation: React.FC = () => {
     },
   );
 
-  const price = listOfPassingStations.reduce((accumulator, currentValue) => {
-    return accumulator + currentValue.costsIncurred;
-  }, 0);
-  const totalPrice = price * seatSelected.length;
-  const priceRound = listOfPassingStationsRound?.reduce(
-    (accumulator, currentValue) => {
-      return accumulator + currentValue.costsIncurred;
-    },
-    0,
-  );
-  const totalPriceRound = isRound ? priceRound * seatSelectedRound?.length : 0;
+  const totalPrice = pricePerSeat * seatSelected.length;
+
+  const totalPriceRound = isRound
+    ? pricePerSeatRound * seatSelectedRound?.length
+    : 0;
 
   const handlePayment = async () => {
     try {
@@ -171,33 +167,31 @@ export const TicketInformation: React.FC = () => {
       <ScrollView style={{flex: 1}}>
         <Box
           title="Thông tin người đặt vé"
-          
           data={[
             {label: 'Họ tên', value: userInformation.name},
             {label: 'Số điện thoại', value: userInformation.phone},
             {label: 'Email', value: userInfo.email},
           ]}
-        
         />
         <Box
           title="Thông tin chuyến xe - Chiều đi"
           data={[
             {
               label: 'Tuyến',
-              value: `${routeInfo.routeDTO.departurePoint} - ${routeInfo.routeDTO.destination}`,
+              value: `${routeInfo.route.departurePoint} - ${routeInfo.route.destination}`,
             },
             {
               label: 'Nhà xe',
-              value: `${routeInfo.busDTO.name}`,
+              value: `${routeInfo.vehicle.name}`,
             },
             {
               label: 'Thời gian',
-              value: timeStampToUtc(routeInfo?.startTimee).format(
+              value: timeStampToUtc(routeInfo?.departureDateLT).format(
                 'HH:mm - DD/MM/YYYY',
               ),
             },
             {label: 'Số vé', value: seatSelected.length},
-            {label: 'Đơn giá', value: formatPrice(price)},
+            {label: 'Đơn giá', value: formatPrice(pricePerSeat)},
             {label: 'Số ghế', value: seatSelected.join(' ,')},
             {label: 'Điểm đón', value: pickup?.title},
             {label: 'Điểm trả', value: dropOff?.title},
@@ -209,20 +203,20 @@ export const TicketInformation: React.FC = () => {
             data={[
               {
                 label: 'Tuyến',
-                value: `${routeRoundInfo.routeDTO.departurePoint} - ${routeRoundInfo.routeDTO.destination}`,
+                value: `${routeRoundInfo.route.departurePoint} - ${routeRoundInfo.route.destination}`,
               },
               {
                 label: 'Nhà xe',
-                value: `${routeRoundInfo.busDTO.name}`,
+                value: `${routeRoundInfo.vehicle.name}`,
               },
               {
                 label: 'Thời gian',
-                value: timeStampToUtc(routeRoundInfo?.startTimee).format(
+                value: timeStampToUtc(routeRoundInfo?.departureDateLT).format(
                   'HH:mm - DD/MM/YYYY',
                 ),
               },
               {label: 'Số vé', value: seatSelectedRound.length},
-              {label: 'Đơn giá', value: formatPrice(priceRound)},
+              {label: 'Đơn giá', value: formatPrice(pricePerSeatRound)},
               {label: 'Số ghế', value: seatSelectedRound.join(' ,')},
               {label: 'Điểm đón', value: pickupRound?.title},
               {label: 'Điểm trả', value: dropOffRound?.title},
@@ -233,9 +227,9 @@ export const TicketInformation: React.FC = () => {
           <Text
             style={{
               fontSize: 16,
-              fontFamily:'SVN-Gilroy-SemiBold',
+              fontFamily: 'SVN-Gilroy-SemiBold',
               marginBottom: 20,
-              color:'#FF9012'
+              color: '#FF9012',
             }}>
             Thông tin thanh toán
           </Text>
@@ -245,11 +239,19 @@ export const TicketInformation: React.FC = () => {
               backgroundColor: '#f9f9f9',
               borderRadius: 12,
             }}>
-            <Item label="Giá" value={formatPrice(totalPrice)} styleValue={{fontSize: 16, fontFamily: 'SVN-Gilroy-Bold'}} />
+            <Item
+              label="Giá"
+              value={formatPrice(totalPrice)}
+              styleValue={{fontSize: 16, fontFamily: 'SVN-Gilroy-Bold'}}
+            />
             {!!routeRoundInfo && (
               <Item label="Khứ hồi" value={formatPrice(totalPriceRound)} />
             )}
-            <Item label="Khuyễn mại" value="0đ" styleValue={{fontSize: 16, fontFamily: 'SVN-Gilroy-Bold'}}/>
+            <Item
+              label="Khuyễn mại"
+              value="0đ"
+              styleValue={{fontSize: 16, fontFamily: 'SVN-Gilroy-Bold'}}
+            />
             <Divider style={{marginVertical: 12}} />
             <Item
               label="Thành tiền"
@@ -281,7 +283,7 @@ export const TicketInformation: React.FC = () => {
           backgroundColor: 'orange',
           margin: 10,
         }}
-        titleStyle={{color:"black",fontSize:18}}
+        titleStyle={{color: 'black', fontSize: 18}}
       />
 
       <PopupError
@@ -317,7 +319,9 @@ const Item = ({
 }) => {
   return (
     <View style={styles.item}>
-      <Text style={{color: '#8b96a0', fontFamily:'SVN-Gilroy-Medium'}}>{label}</Text>
+      <Text style={{color: '#8b96a0', fontFamily: 'SVN-Gilroy-Medium'}}>
+        {label}
+      </Text>
       <Text style={styleValue ?? {fontFamily: 'SVN-Gilroy-Bold'}}>{value}</Text>
     </View>
   );
@@ -332,7 +336,13 @@ const Box = ({
 }) => {
   return (
     <View style={styles.box}>
-      <Text style={{fontSize: 16, fontFamily: 'SVN-Gilroy-SemiBold', marginBottom: 20,color:'#FF9012'}}>
+      <Text
+        style={{
+          fontSize: 16,
+          fontFamily: 'SVN-Gilroy-SemiBold',
+          marginBottom: 20,
+          color: '#FF9012',
+        }}>
         {title}
       </Text>
       {data.map((item, index) => (

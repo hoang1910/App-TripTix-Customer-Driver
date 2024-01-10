@@ -75,11 +75,18 @@ export const SelectRoute: React.FC = () => {
     }
     setRouteInfo(item, {isRound});
 
-    navigation.navigate(isRound ? 'SelectSeatRoundTrip' : 'SelectSeat', {
-      fromId,
-      toId,
-      isRound,
-    });
+    isRound
+      ? navigation.goBack()
+      : navigation.navigate('DepartureInformation', {
+          fromId: isRound ? toId : fromId,
+          toId: isRound ? fromId : toId,
+        });
+
+    // navigation.navigate(isRound ? 'SelectSeatRoundTrip' : 'SelectSeat', {
+    //   fromId,
+    //   toId,
+    //   isRound,
+    // });
   };
 
   useEffect(() => {
@@ -117,7 +124,7 @@ export const SelectRoute: React.FC = () => {
             ...item,
             listtripStopDTO: item.route.listStationInRoute
               .sort((a, b) => {
-                return a.index - b.index;
+                return a.orderInRoute - b.orderInRoute;
               })
               .map((stopDTO, index) => {
                 return {

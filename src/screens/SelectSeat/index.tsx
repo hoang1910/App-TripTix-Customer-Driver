@@ -12,6 +12,7 @@ import {useStore} from '@store/index';
 import {formatPrice} from '@utils/price';
 import {useToast} from 'react-native-toast-notifications';
 import {TAppRoute} from 'navigation/AppNavigator.type';
+import {getPriceTicket, getSeatUnavailable} from '@httpClient/trip.api';
 
 const SeatStatus = {
   Available: 'AVAILABLE',
@@ -28,6 +29,9 @@ export const SelectSeat: React.FC = () => {
       routeRoundInfo,
       seatSelected,
       seatSelectedRound,
+      pricePerSeat,
+      pricePerSeatRound,
+      setPricePerSeat,
     },
     authentication: {userInfo, config},
   } = useStore();
@@ -39,11 +43,46 @@ export const SelectSeat: React.FC = () => {
   const [listSelectSeat, setListSelectSeat] = useState([]);
   const [showError, setShowError] = useState(false);
   const toast = useToast();
-  console.log(routeInfo);
+  const [map, setMap] = useState<any[]>([]);
+  const price = isRound ? pricePerSeatRound : pricePerSeat;
 
   useEffect(() => {
     setListSelectSeat((isRound ? seatSelectedRound : seatSelected) ?? []);
   }, [isRound]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const [resSeat, resPrice] = await Promise.all([
+        getSeatUnavailable(fromId, toId, routeInfo.idTrip),
+        getPriceTicket(fromId, toId, routeInfo.idTrip),
+      ]);
+
+      setPricePerSeat(resPrice.data.data.pricePerSeat, {isRound});
+
+      const seats = Array.from(
+        {length: routeInfo.vehicle.capacity},
+        (item, index) => {
+          const name = `A${index + 1}`;
+          return {
+            seatName: name,
+            status: resSeat.data.data.includes(name)
+              ? SeatStatus.UnAvailable
+              : SeatStatus.Available,
+          };
+        },
+      );
+      if (numberFloor === 1) {
+        setMap([seats]);
+        return;
+      }
+      const indexCenter = Math.floor(seats.length / 2);
+      setMap([seats.slice(0, indexCenter), seats.slice(indexCenter)]);
+    } catch {}
+  };
 
   const onActiveSeat = seat => {
     const seatId = seat.seatName;
@@ -64,36 +103,24 @@ export const SelectSeat: React.FC = () => {
 
   const onDepartureInfo = () => {
     setSeatSelected(listSelectSeat, {isRound});
-    const pickUp = routeInfo.listtripStopDTO.find(item => item.index === 0);
-    const dropOff = routeInfo.listtripStopDTO.find(item => item.index === 1);
-    setUserInformation({
-      pickUpId: pickUp.id,
-      dropOffId: dropOff.id,
-      name: userInfo.fullName,
-      phone: userInfo.phone,
-    });
-    navigation.navigate('DepartureInformation', {
-      fromId: isRound ? toId : fromId,
-      toId: isRound ? fromId : toId,
-    });
+    // const pickUp = routeInfo.listtripStopDTO.find(item => item.index === 0);
+    // const dropOff = routeInfo.listtripStopDTO.find(item => item.index === 1);
+    // setUserInformation({
+    //   pickUpId: pickUp.id,
+    //   dropOffId: dropOff.id,
+    //   name: userInfo.fullName,
+    //   phone: userInfo.phone,
+    // });
+    // navigation.navigate('DepartureInformation', {
+    //   fromId: isRound ? toId : fromId,
+    //   toId: isRound ? fromId : toId,
+    // });
+    navigation.goBack();
   };
 
   const selectedSeatsText = listSelectSeat?.join(', ');
 
-  const numberFloor = routeInfo.busDTO?.floor;
-
-  const map = useMemo(() => {
-    if (numberFloor === 1) {
-      return [routeInfo.seatNameBooking];
-    }
-
-    const indexCenter = Math.floor(routeInfo.seatNameBooking.length / 2);
-
-    return [
-      routeInfo.seatNameBooking.slice(0, indexCenter),
-      routeInfo.seatNameBooking.slice(indexCenter),
-    ];
-  }, [numberFloor]);
+  const numberFloor = routeInfo.vehicle?.floor;
 
   const chunkArray = (array, chunkSize) => {
     return Array.from({length: Math.ceil(array.length / chunkSize)}, (v, i) =>
@@ -122,7 +149,9 @@ export const SelectSeat: React.FC = () => {
               paddingHorizontal: 16,
               paddingVertical: 16,
             }}>
-            <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>{`Tầng ${index + 1}`}</Text>
+            <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>{`Tầng ${
+              index + 1
+            }`}</Text>
             {chunkArray(item, 2).map((row, index2) => (
               <View
                 key={index2}
@@ -181,8 +210,12 @@ export const SelectSeat: React.FC = () => {
               justifyContent: 'space-between',
               alignItems: 'stretch',
             }}>
-            <Text style={{marginBottom: 10,fontFamily:'SVN-Gilroy-Medium'}}>Ghế đang chọn</Text>
-            <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Giá vé dự kiến</Text>
+            <Text style={{marginBottom: 10, fontFamily: 'SVN-Gilroy-Medium'}}>
+              Ghế đang chọn
+            </Text>
+            <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>
+              Giá vé dự kiến
+            </Text>
           </View>
           <View
             style={{
@@ -191,10 +224,17 @@ export const SelectSeat: React.FC = () => {
               justifyContent: 'space-between',
               alignItems: 'flex-end',
             }}>
-            <Text style={{marginBottom: 10, color: 'orange',fontFamily:'SVN-Gilroy-Medium'}}>
+            <Text
+              style={{
+                marginBottom: 10,
+                color: 'orange',
+                fontFamily: 'SVN-Gilroy-Medium',
+              }}>
               {selectedSeatsText}
             </Text>
-            <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>{formatPrice(listSelectSeat?.length * routeInfo.fare)}</Text>
+            <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>
+              {formatPrice(listSelectSeat?.length * price)}
+            </Text>
           </View>
         </View>
       </View>
@@ -223,7 +263,7 @@ export const SelectSeat: React.FC = () => {
               backgroundColor: 'white',
               marginRight: 5,
             }}></View>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Trống</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Trống</Text>
         </View>
         <View
           style={{
@@ -242,7 +282,7 @@ export const SelectSeat: React.FC = () => {
               backgroundColor: 'green',
               marginRight: 5,
             }}></View>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Đang chọn</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Đang chọn</Text>
         </View>
         <View
           style={{
@@ -261,7 +301,7 @@ export const SelectSeat: React.FC = () => {
               backgroundColor: 'black',
               marginRight: 5,
             }}></View>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Đã đặt</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Đã đặt</Text>
         </View>
       </View>
       <View

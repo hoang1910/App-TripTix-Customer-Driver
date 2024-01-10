@@ -6,6 +6,8 @@ class Route {
   userInformation = {};
   routeRoundInfo: undefined | any = undefined;
   seatSelectedRound: undefined | string[] = undefined;
+  pricePerSeat: number = 0;
+  pricePerSeatRound: number = 0;
 
   constructor() {
     makeObservable(this, {
@@ -14,6 +16,8 @@ class Route {
       userInformation: observable,
       routeRoundInfo: observable,
       seatSelectedRound: observable,
+      pricePerSeat: observable,
+      pricePerSeatRound: observable,
       setSeatSelected: action,
       setRouteInfo: action,
       setUserInformation: action,
@@ -21,6 +25,15 @@ class Route {
       clear: action,
     });
   }
+
+  setPricePerSeat = (value: number, config?: {isRound?: boolean}) => {
+    if (config?.isRound) {
+      this.pricePerSeatRound = value;
+      return;
+    }
+
+    this.pricePerSeat = value;
+  };
 
   setSeatSelected = (value: string[], config?: {isRound?: boolean}) => {
     if (config?.isRound) {

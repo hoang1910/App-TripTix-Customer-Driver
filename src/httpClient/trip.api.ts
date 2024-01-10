@@ -129,6 +129,26 @@ const getReadyRoleDriver = (
   );
 };
 
+const getSeatUnavailable = (
+  pickUpId: number,
+  stationId: number,
+  tripId: number,
+) => {
+  return httpClient.get(
+    `${routes.trip.getSeatUnavailable}?idStationPickUp=${pickUpId}&idStationDropOff=${stationId}&idTrip=${tripId}`,
+  );
+};
+
+const getPriceTicket = (
+  pickUpId: number,
+  stationId: number,
+  tripId: number,
+) => {
+  return httpClient.get(
+    `${routes.trip.getTicketPrice}?codePickUpPoint=${pickUpId}&codeDropOffPoint=${stationId}&idTrip=${tripId}`,
+  );
+};
+
 const putCheckout = (idBooking: number) => {
   return httpClient.put(`${routes.trip.checkout}?idBooking=${idBooking}`);
 };
@@ -151,4 +171,6 @@ export {
   getHistoryRoleDriver,
   getReadyRoleDriver,
   putCheckout,
+  getSeatUnavailable,
+  getPriceTicket,
 };

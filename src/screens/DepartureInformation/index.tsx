@@ -7,7 +7,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {Chip, Input, Text} from '@rneui/themed';
 import {useStore} from '@store/index';
 import {formatPrice} from '@utils/price';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -60,6 +60,7 @@ export const DepartureInformation: React.FC = observer(() => {
       routeRoundInfo,
       seatSelectedRound,
       clearRound,
+      setSeatSelected,
     },
   } = useStore();
 
@@ -90,6 +91,13 @@ export const DepartureInformation: React.FC = observer(() => {
   const [pickUpIdRound, setPickUpIdRound] = useState('');
   const [dropOffIdRound, setDropOffIdRound] = useState('');
 
+  useEffect(() => {
+    setSeatSelected([], {isRound: false});
+  }, [pickUpId, dropOffId]);
+  useEffect(() => {
+    setSeatSelected([], {isRound: true});
+  }, [pickUpIdRound, dropOffIdRound]);
+
   const handleConfirm = dataForm => {
     setUserInformation(dataForm);
     navigation.navigate('TicketInformation', {fromId, toId});
@@ -99,7 +107,6 @@ export const DepartureInformation: React.FC = observer(() => {
   const listLength = routeInfo.listtripStopDTO.length;
   const isSubTripRound = routeRoundInfo?.subTrip;
   const listLengthRound = routeRoundInfo?.listtripStopDTO.length;
-  console.log("hahaha",listLength);
   const listPickup = useMemo(() => {
     const indexDropOff = routeInfo.listtripStopDTO.findIndex(
       item => item.id === dropOffId,
@@ -163,7 +170,7 @@ export const DepartureInformation: React.FC = observer(() => {
       fromId: toId,
       toId: fromId,
       isRound: true,
-      dateDefault: routeInfo.endTimee,
+      dateDefault: routeInfo.endDateLT,
     });
   };
 
@@ -175,32 +182,34 @@ export const DepartureInformation: React.FC = observer(() => {
   };
 
   const handleChooseSeat = () => {
-    navigation.navigate('SelectSeat', {fromId, toId, isRound: false});
+    navigation.navigate('SelectSeat', {
+      fromId: pickUpId,
+      toId: dropOffId,
+      isRound: false,
+    });
   };
   const handleChooseSeatRound = () => {
     navigation.navigate('SelectSeatRoundTrip', {
-      fromId: toId,
-      toId: fromId,
+      fromId: pickUpIdRound,
+      toId: dropOffIdRound,
       isRound: true,
     });
   };
+  console.log(111, routeInfo.departureDateLT);
+  const disableSubmit =
+    !isValid ||
+    seatSelected?.length < 1 ||
+    !seatSelected ||
+    (!!routeRoundInfo
+      ? seatSelectedRound?.length < 1 || !seatSelectedRound
+      : false);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f7f7f7'}}>
       <KeyboardAwareScrollView style={{flex: 1}}>
-        {/* <View style={styles.box}>
-          <Chip
-            title={`${formatPrice(routeInfo.fare)} - ${
-              CarTypes[routeInfo.busDTO.type]
-            }`}
-            containerStyle={{flexDirection: 'row'}}
-            buttonStyle={{backgroundColor: 'black'}}
-            titleStyle={{fontFamily: 'SVN-Gilroy-Bold', color: 'orange'}}
-          />
-        </View> */}
         <Box
           title="Chiều đi"
-          time={timeStampToUtc(routeInfo?.startTimee).format(
+          time={timeStampToUtc(routeInfo?.departureDateLT).format(
             'HH:mm - DD/MM/YYYY',
           )}
           seats={seatSelected.join(', ')}
@@ -213,11 +222,12 @@ export const DepartureInformation: React.FC = observer(() => {
           dropOffName={'dropOffId'}
           steps={routeInfo.listtripStopDTO}
           onChooseAgain={handleChooseSeat}
+          disableChooseSeat={!pickUpId || !dropOffId}
         />
         {!!routeRoundInfo ? (
           <Box
             title="Chiều về"
-            time={timeStampToUtc(routeRoundInfo?.startTimee).format(
+            time={timeStampToUtc(routeRoundInfo?.departureDateLT).format(
               'HH:mm - DD/MM/YYYY',
             )}
             seats={seatSelectedRound?.join(', ')}
@@ -233,6 +243,7 @@ export const DepartureInformation: React.FC = observer(() => {
             onCancel={handleCancelRound}
             steps={routeRoundInfo.listtripStopDTO}
             onChooseAgain={handleChooseSeatRound}
+            disableChooseSeat={!pickUpIdRound || !dropOffIdRound}
           />
         ) : (
           <View style={styles.box}>
@@ -258,10 +269,14 @@ export const DepartureInformation: React.FC = observer(() => {
             name="name"
             render={({field: {value, onChange}}) => (
               <Input
-                label={<Text style={{fontFamily: 'SVN-Gilroy-SemiBold'}}>Thông tin khách</Text>} 
+                label={
+                  <Text style={{fontFamily: 'SVN-Gilroy-SemiBold'}}>
+                    Thông tin khách
+                  </Text>
+                }
                 value={value}
                 onChangeText={onChange}
-                inputStyle={{fontSize: 16,fontFamily:'SVN-Gilroy-Bold'}}
+                inputStyle={{fontSize: 16, fontFamily: 'SVN-Gilroy-Bold'}}
                 editable={userInfo.role === EAccountType.Staff}
               />
             )}
@@ -275,7 +290,7 @@ export const DepartureInformation: React.FC = observer(() => {
                 onChangeText={onChange}
                 inputStyle={{fontSize: 16}}
                 editable={userInfo.role === EAccountType.Staff}
-                style={{fontFamily:'SVN-Gilroy-Bold'}}
+                style={{fontFamily: 'SVN-Gilroy-Bold'}}
               />
             )}
           />
@@ -289,8 +304,8 @@ export const DepartureInformation: React.FC = observer(() => {
           backgroundColor: 'orange',
           margin: 10,
         }}
-        titleStyle={{color:'black'}}
-        disabled={!isValid}
+        titleStyle={{color: 'black'}}
+        disabled={disableSubmit}
       />
     </SafeAreaView>
   );
@@ -310,6 +325,7 @@ type TBox = {
   onCancel?: () => void;
   steps: any[];
   onChooseAgain: () => void;
+  disableChooseSeat: boolean;
 };
 const Box: React.FC<TBox> = ({
   title,
@@ -325,6 +341,7 @@ const Box: React.FC<TBox> = ({
   onCancel,
   steps = [],
   onChooseAgain,
+  disableChooseSeat,
 }) => {
   return (
     <View style={styles.box}>
@@ -341,24 +358,31 @@ const Box: React.FC<TBox> = ({
           <Text style={{color: 'red'}}>Huỷ</Text>
         </TouchableOpacity>
       )}
-       <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 120,
-                backgroundColor: '#DEDEDE',
-                paddingVertical: 6,
-                borderRadius: 20,
-              }}>
-              <Text style={{color: 'black', fontFamily: 'SVN-Gilroy-SemiBold',fontSize:15}}>{title}</Text>
-            </View>
-          </View>
+      <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 120,
+            backgroundColor: '#DEDEDE',
+            paddingVertical: 6,
+            borderRadius: 20,
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'SVN-Gilroy-SemiBold',
+              fontSize: 15,
+            }}>
+            {title}
+          </Text>
+        </View>
+      </View>
       <Steps data={steps} showPrice />
       <View style={{flexDirection: 'row', marginTop: 12}}>
         <View style={{flex: 1, marginRight: 4}}>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Thời gian</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Thời gian</Text>
           <Text style={styles.value}>{time}</Text>
         </View>
         <View style={{flex: 1, marginLeft: 4}}>
@@ -368,9 +392,19 @@ const Box: React.FC<TBox> = ({
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Số ghế đã chọn</Text>
-            <TouchableOpacity onPress={onChooseAgain}>
-              <Text style={{fontSize: 10, color: 'orange'}}>Chọn lại</Text>
+            <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>
+              Số ghế đã chọn (*)
+            </Text>
+            <TouchableOpacity
+              disabled={disableChooseSeat}
+              onPress={onChooseAgain}>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: disableChooseSeat ? '#ccc' : 'orange',
+                }}>
+                Chọn ghế
+              </Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.value}>{seats}</Text>
@@ -378,7 +412,7 @@ const Box: React.FC<TBox> = ({
       </View>
       <View style={{flexDirection: 'row', marginTop: 12}}>
         <View style={{flex: 1, marginRight: 4}}>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Điểm đón: (*)</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Điểm đón: (*)</Text>
           <Controller
             control={control}
             name={pickupName}
@@ -416,7 +450,7 @@ const Box: React.FC<TBox> = ({
           />
         </View>
         <View style={{flex: 1, marginLeft: 4}}>
-          <Text style={{fontFamily:'SVN-Gilroy-Medium'}}>Điểm đến: (*)</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium'}}>Điểm đến: (*)</Text>
           <Controller
             control={control}
             name={dropOffName}
