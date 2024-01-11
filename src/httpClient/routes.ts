@@ -23,7 +23,7 @@ const routes = {
     postBookTicket: url.baseUrl + '/booking',
     postBookTicketRound: url.baseUrl + '/booking/round-trip',
     getBooking: url.baseUrl + '/ticket',
-    cancelBooking: url.baseUrl + '/bookings/cancel',
+    cancelBooking: url.baseUrl + '/ticket/cancel-ticket-for-customers',
     feedback: url.baseUrl + '/ticket/vote-star-for-customers',
     getHistoryDriver: url.baseUrl + '/trips/history-driver',
     putCheckin: url.baseUrl + '/ticket/check-in-by-driver',

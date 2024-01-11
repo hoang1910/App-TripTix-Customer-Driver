@@ -62,9 +62,9 @@ const postBookTicketRound = (data: {
 const getBookings = (idCustomer: number) =>
   httpClient.get(`${routes.trip.getBooking}?idCustomer=${idCustomer}`);
 
-const putCancelBooking = (idTrip: number) =>
+const putCancelBooking = (idTicket: number) =>
   httpClient.put(routes.trip.cancelBooking, {
-    idTicket
+    idTicket,
   });
 
 const putFeedback = (idTicket: number, star: number) => {

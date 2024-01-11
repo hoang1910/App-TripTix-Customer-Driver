@@ -74,15 +74,40 @@ export const TicketItem: React.FC<{
   } = useStore();
 
   const isDriver = userInfo.role === EAccountType.Driver;
+  console.log(ticket.trip.nameRoute);
 
   return (
-    <View style={[styles.ticket, {backgroundColor: getBackground(status),borderColor: getBorder(status)}]}>
+    <View
+      style={[
+        styles.ticket,
+        {
+          backgroundColor: getBackground(status),
+          borderColor: getBorder(status),
+        },
+      ]}>
       <View style={styles.ticketHeader}>
-        <Text style={{color: 'gray', fontSize: 16,fontFamily:'SVN-Gilroy-Medium'}}>Giờ xuất bến</Text>
-        <Text style={{color: 'black', fontSize: 30,fontFamily:'SVN-Gilroy-SemiBold'}}>
+        <Text
+          style={{
+            color: 'gray',
+            fontSize: 16,
+            fontFamily: 'SVN-Gilroy-Medium',
+          }}>
+          Giờ xuất bến
+        </Text>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 30,
+            fontFamily: 'SVN-Gilroy-SemiBold',
+          }}>
           {timeStampToUtc(timeStart).format('HH:mm')}
         </Text>
-        <Text style={{fontSize: 18, color: 'gray',fontFamily:'SVN-Gilroy-SemiBold'}}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: 'gray',
+            fontFamily: 'SVN-Gilroy-SemiBold',
+          }}>
           {timeStampToUtc(timeStart).format('DD-MM-YYYY')}
         </Text>
         <Text
@@ -90,15 +115,15 @@ export const TicketItem: React.FC<{
             fontSize: 14,
             color: getColorStatus(status),
             marginTop: 10,
-            fontFamily:'SVN-Gilroy-SemiBold',
+            fontFamily: 'SVN-Gilroy-SemiBold',
             textAlign: 'center',
           }}>
           {BookingStatusLabel[status]}
         </Text>
       </View>
       <View style={styles.ticketContent}>
-        {!!ticket.bookingCode && (
-          <InfoItem label="Mã đặt vé" value={ticket.bookingCode} />
+        {!!ticket.trip.nameRoute && (
+          <InfoItem label="Tuyến" value={ticket.trip.nameRoute} />
         )}
         {!!ticket.busDTO?.idBus && (
           <InfoItem
@@ -114,11 +139,11 @@ export const TicketItem: React.FC<{
           icon={{name: 'location-on', color: 'orange'}}
           value={destination}
         />
-        {!!ticket.listTicket?.length && (
-          <InfoItem label="Tổng số vé" value={ticket.listTicket?.length} />
+        {!!ticket.trip?.idTrip && (
+          <InfoItem label="Mã chuyến" value={ticket.trip?.idTrip} />
         )}
-        {userInfo.role === EAccountType.Driver && (
-          <InfoItem label="Tổng số khách" value={ticket.bookedSeat} />
+        {!!ticket.seatName && (
+          <InfoItem label="Số ghế" value={ticket.seatName} />
         )}
       </View>
       <View>
@@ -161,7 +186,11 @@ export const InfoItem = ({
   return (
     <View
       style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
-      {!!label && <Text style={{color: 'gray',fontFamily:'SVN-Gilroy-Medium'}}>{label}: </Text>}
+      {!!label && (
+        <Text style={{color: 'gray', fontFamily: 'SVN-Gilroy-Medium'}}>
+          {label}:{' '}
+        </Text>
+      )}
       {!!icon && (
         <IconFA
           name={icon.name}
@@ -204,7 +233,7 @@ const styles = StyleSheet.create({
   },
   ticketContent: {
     marginBottom: 10,
-    flex: 2,
+    flex: 1.8,
     paddingLeft: 12,
   },
   ticketLabel: {
@@ -215,7 +244,7 @@ const styles = StyleSheet.create({
   ticketValue: {
     fontSize: 16,
     // fontWeight: 'bold',
-    fontFamily:'SVN-Gilroy-SemiBold'
+    fontFamily: 'SVN-Gilroy-SemiBold',
   },
   ticketValueTime: {
     fontSize: 16,

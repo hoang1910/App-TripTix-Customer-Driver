@@ -36,15 +36,6 @@ export const Checkin = ({
     checkPermission();
   }, []);
 
-  // useEffect(() => {
-  //   if (defaultBooking) {
-  //     setBookingCode(defaultBooking);
-  //     setTimeout(() => {
-  //       handleCheckin(defaultBooking);
-  //     }, 1000);
-  //   }
-  // }, [defaultBooking]);
-
   const checkPermission = async () => {
     const status = await BarCodeScanner.getPermissionsAsync();
     setAcceptCamera(status.granted);

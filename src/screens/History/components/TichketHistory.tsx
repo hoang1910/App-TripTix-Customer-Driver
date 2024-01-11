@@ -87,25 +87,25 @@ export default function TichketHistory({
       return statusFilter ? item.bookingStatus === statusFilter : true;
     });
   }, [data, statusFilter]);
-  useEffect(()=>{
-    console.log("hello",data);
-  })
+
   useEffect(() => {
     if (listTicket) {
       if (type == 'history') {
         const history = listTicket
-          .filter(item => CompletedStatus.includes(item.status))
-          // .sort((a, b) => {
-          //   return b.updatedDate - a.updatedDate;
-          // });
+          .filter(item => {
+            return CompletedStatus.includes(item.status);
+          })
+          .sort((a, b) => {
+            return b.updatedDate - a.updatedDate;
+          });
         setData(history);
       }
       if (type == 'perpare') {
         const perpare = listTicket
           .filter(item => UnfinishedStatus.includes(item.status))
-          // .sort((a, b) => {
-          //   return a.tripDTO?.startTimee - b.tripDTO?.startTimee;
-          // });
+          .sort((a, b) => {
+            return a.trip?.departureDate - b.trip?.departureDate;
+          });
         setData(perpare);
       }
     }
@@ -116,7 +116,8 @@ export default function TichketHistory({
       setCancel(null);
       setCanceling(booking.bookingCode);
       const now = dayjs().add(7, 'hour').utc().format();
-      const diff = dayjs(booking.tripDTO?.startTimee * 1000).diff(now, 'hour');
+      const diff = dayjs(booking.trip?.departureDate * 1000).diff(now, 'hour');
+      console.log(diff < hourCanNotCancel);
 
       if (diff < hourCanNotCancel) {
         toast.show(
@@ -125,10 +126,7 @@ export default function TichketHistory({
         );
         return;
       }
-      const {data} = await putCancelBooking(
-        userInfo.idUserSystem,
-        booking.idBooking,
-      );
+      const {data} = await putCancelBooking(booking.idTicket);
 
       if (data.status === StatusApiCall.Success) {
         onRefresh();
