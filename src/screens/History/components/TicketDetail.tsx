@@ -147,7 +147,7 @@ export const TicketDetail = ({
           />
           <InfoItem label="SĐT" value={booking.tripDTO?.driverDTO.phone} />
         </View> */}
-      </ScrollView>
+      </ScrollView> 
     </ReactNativeModal>
   );
 };
