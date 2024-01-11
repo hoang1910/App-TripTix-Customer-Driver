@@ -51,12 +51,12 @@ const PriceTypeArray = [
 
 const BookingStatusId = {
   Paid: 'PAID',
-  Cancel: 'CANCEL',
-  Run: 'RUN',
-  Finish: 'FINISH',
+  Cancel: 'CANCELED',
+  Run: 'RUNNING',
+  Finish: 'FINISHED',
   Ready: 'READY',
-  Checkin: 'CHECKIN',
-  NoCheckin: 'NO_CHECKIN',
+  Checkin: 'CHECK_IN',
+  NoCheckin: 'NOT_CHECKIN',
   NoShow: 'NO_SHOW',
 };
 

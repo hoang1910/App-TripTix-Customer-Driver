@@ -87,23 +87,25 @@ export default function TichketHistory({
       return statusFilter ? item.bookingStatus === statusFilter : true;
     });
   }, [data, statusFilter]);
-
+  useEffect(()=>{
+    console.log("hello",data);
+  })
   useEffect(() => {
     if (listTicket) {
       if (type == 'history') {
         const history = listTicket
-          .filter(item => CompletedStatus.includes(item.bookingStatus))
-          .sort((a, b) => {
-            return b.updatedDate - a.updatedDate;
-          });
+          .filter(item => CompletedStatus.includes(item.status))
+          // .sort((a, b) => {
+          //   return b.updatedDate - a.updatedDate;
+          // });
         setData(history);
       }
       if (type == 'perpare') {
         const perpare = listTicket
-          .filter(item => UnfinishedStatus.includes(item.bookingStatus))
-          .sort((a, b) => {
-            return a.tripDTO?.startTimee - b.tripDTO?.startTimee;
-          });
+          .filter(item => UnfinishedStatus.includes(item.status))
+          // .sort((a, b) => {
+          //   return a.tripDTO?.startTimee - b.tripDTO?.startTimee;
+          // });
         setData(perpare);
       }
     }
@@ -138,9 +140,9 @@ export default function TichketHistory({
     }
   };
 
-  const handleFeedback = async (bookingId: number, star: number) => {
+  const handleFeedback = async (idTicket: number, star: number) => {
     setFeedback(null);
-    putFeedback(bookingId, star);
+    putFeedback(idTicket, star);
   };
 
   return (
@@ -198,10 +200,10 @@ export default function TichketHistory({
                 onPressFeedback={(t: any) => setFeedback(t)}
                 onPressInfo={(t: any) => setDetail(t)}
                 canceling={canceling}
-                timeStart={ticket.tripDTO?.startTimee}
+                timeStart={ticket.trip.departureDateStr}
                 departurePoint={ticket.pickUpPoint}
                 destination={ticket.dropOffPoint}
-                status={ticket.bookingStatus}
+                status={ticket.status}
               />
             ))}
         </ScrollView>

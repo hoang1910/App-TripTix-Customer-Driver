@@ -24,6 +24,7 @@ export const Banner: React.FC = () => {
 
   useEffect(() => {
     getData();
+    console.log(data);
   }, []);
 
   const getData = async () => {
@@ -90,7 +91,7 @@ export const Banner: React.FC = () => {
               title={item.title}
               content={item.description}
               showLine={index !== 0}
-              image={item.listImg[0]}
+              image={item.imgLink}
             />
           );
         })}
