@@ -20,7 +20,7 @@ export const TicketItem: React.FC<{
   onPressCancel?: (ticket: any) => void;
   onPressFeedback?: (ticket: any) => void;
   canceling?: string;
-  timeStart: number;
+  timeStart: string;
   departurePoint: string;
   destination: string;
   status: string;

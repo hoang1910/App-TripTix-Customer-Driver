@@ -16,10 +16,10 @@ module.exports = {
           '@storage': './src/storage',
           '@store': './src/store',
           '@types': './src/types',
-          '@utils': './src/utils',
-        },
-      },
+          '@utils': './src/utils'
+        }
+      }
     ],
-    ['module:react-native-dotenv'],
-  ],
-};
+    ['module:react-native-dotenv']
+  ]
+}

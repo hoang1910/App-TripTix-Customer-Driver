@@ -37,7 +37,9 @@ export const History: React.FC = () => {
   const getHistory = async () => {
     try {
       setIsLoading(true);
+      console.log("data???",userInfo);
       const {data} = await getBookings(userInfo.idUserSystem);
+      console.log(data);
       if (data.status === StatusApiCall.Success) {
         setListTicket(data.data);
       }
