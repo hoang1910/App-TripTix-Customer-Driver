@@ -71,16 +71,14 @@ export const ListCustomerStation = ({
             {pickup?.map((item, index) => (
               <InfoItem
                 key={index}
-                name={item.userSystemDTO.fullName}
-                desc={`${
-                  item.userSystemDTO.phone ?? item.userSystemDTO.email
-                } - ${item.seats}`}
-                status={item.bookingStatus}
+                name={item.seatName}
+                desc={`${item?.fullName} - ${item?.phone ?? item?.email}`}
+                status={item?.status}
                 type="pickup"
                 onPressCheckin={onPressCheckin}
-                bookingCode={item.bookingCode}
-                loading={loading.includes(item.idBooking)}
-                bookingId={item.idBooking}
+                bookingCode={item?.ticketCode}
+                loading={loading.includes(item?.idBooking)}
+                bookingId={item?.idBooking}
                 onPressCheckout={() => {}}
               />
             ))}
@@ -95,12 +93,10 @@ export const ListCustomerStation = ({
             {dropOff?.map((item, index) => (
               <InfoItem
                 key={index}
-                name={item.userSystemDTO.fullName}
-                desc={`${
-                  item.userSystemDTO.phone ?? item.userSystemDTO.email
-                } - ${item.seats}`}
-                status={item.bookingStatus}
-                bookingCode={item.bookingCode}
+                name={item.seatName}
+                desc={`${item?.fullName} - ${item?.phone ?? item?.email}`}
+                status={item.status}
+                bookingCode={item.ticketCode}
                 onPressCheckout={onPressCheckout}
                 bookingId={item.idBooking}
                 type="dropOff"

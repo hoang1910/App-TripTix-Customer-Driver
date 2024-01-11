@@ -74,7 +74,6 @@ export const TicketItem: React.FC<{
   } = useStore();
 
   const isDriver = userInfo.role === EAccountType.Driver;
-  console.log(ticket.trip.nameRoute);
 
   return (
     <View
@@ -122,8 +121,8 @@ export const TicketItem: React.FC<{
         </Text>
       </View>
       <View style={styles.ticketContent}>
-        {!!ticket.trip.nameRoute && (
-          <InfoItem label="Tuyến" value={ticket.trip.nameRoute} />
+        {!!ticket.route?.name && (
+          <InfoItem label="Tuyến" value={ticket.route?.name} />
         )}
         {!!ticket.busDTO?.idBus && (
           <InfoItem

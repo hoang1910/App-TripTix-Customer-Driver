@@ -119,9 +119,9 @@ export const HistoryDriver: React.FC = () => {
             onPressInfo={(trip: any) => {
               setDetail(trip);
             }}
-            timeStart={item.startTimee}
-            departurePoint={item.routeDTO.departurePoint}
-            destination={item.routeDTO.destination}
+            timeStart={item.departureDateLT}
+            departurePoint={item.route?.departurePoint}
+            destination={item.route?.destination}
             status={item.status}
           />
         )}

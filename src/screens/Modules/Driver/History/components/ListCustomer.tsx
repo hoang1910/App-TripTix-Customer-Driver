@@ -18,32 +18,27 @@ import {
 } from 'react-native-table-component';
 import {BookingStatusId} from '@constants/route';
 
-const array = [BookingStatusId.Checkin,BookingStatusId.Finish]
+const array = [BookingStatusId.Checkin, BookingStatusId.Finish];
 export const ListCustomer: React.FC<{
   show: boolean;
   onClose: () => void;
   totalSeats: number;
   listCustomer: Record<string, any>[];
-  listSeat: Record<string, any>[];
+  listSeat: string[];
 }> = ({show, onClose, totalSeats, listCustomer, listSeat}) => {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    const l = listSeat.map(seat => {
-      const seatName = seat.seatName;
+    const l = listSeat.map(seatName => {
       const customer = listCustomer.find(item => {
-        return item.idBooking === seat.idBooking;
+        return item.seatName === seatName;
       });
 
       return [
         seatName,
-        {name: customer?.userSystemDTO.fullName, id: seat.idBooking},
-        customer?.userSystemDTO.phone,
-        customer
-          ? array.includes(customer.bookingStatus)
-            ? true
-            : false
-          : null,
+        {name: customer?.fullName, id: customer?.idBooking},
+        customer?.phone,
+        customer ? (array.includes(customer.status) ? true : false) : null,
       ];
     });
 
@@ -56,8 +51,8 @@ export const ListCustomer: React.FC<{
     });
 
     Alert.alert(
-      customer?.userSystemDTO.fullName,
-      `Trạm đón: ${customer.pickUpPoint}\nTrạm xuống: ${customer.dropOffPoint}`,
+      customer?.fullName,
+      `Trạm đón: ${customer.onStation?.name}\nTrạm xuống: ${customer.offStation?.name}`,
     );
   };
 

@@ -59,7 +59,7 @@ const Item = ({
 } & TItem) => {
   return (
     <TouchableOpacity
-      onPress={() => onPressItem(data.stationDTO.idStation)}
+      onPress={() => onPressItem(data.station?.idStation)}
       disabled={!onPressItem || disable}
       style={{flexDirection: 'row', minHeight: isLastItem ? 0 : 60}}>
       <View style={{flex: 1}}>
@@ -94,7 +94,9 @@ const Item = ({
           style={{
             marginBottom: 4,
           }}>
-          <Text style={{fontFamily: "SVN-Gilroy-XBold", marginBottom: 4}}>{title}</Text>
+          <Text style={{fontFamily: 'SVN-Gilroy-XBold', marginBottom: 4}}>
+            {title}
+          </Text>
           {!!costsIncurred && (
             <Text
               style={{
@@ -104,11 +106,23 @@ const Item = ({
               }}>{` - ${formatPrice(costsIncurred)}`}</Text>
           )}
         </Text>
-        <Text style={{fontSize: 12,fontFamily:'SVN-Gilroy-Medium', color: "grey", marginBottom: 4}}>
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: 'SVN-Gilroy-Medium',
+            color: 'grey',
+            marginBottom: 4,
+          }}>
           {desc}
         </Text>
         {!!desc2 && (
-          <Text style={{fontSize: 12,fontFamily:'SVN-Gilroy-Medium', color: 'grey', marginBottom: 16}}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: 'SVN-Gilroy-Medium',
+              color: 'grey',
+              marginBottom: 16,
+            }}>
             * {desc2}
           </Text>
         )}

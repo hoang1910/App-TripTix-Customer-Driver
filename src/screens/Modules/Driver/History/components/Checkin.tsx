@@ -58,17 +58,16 @@ export const Checkin = ({
       setGetting(pre => [...pre, defaultBooking]);
       const {data} = await putCheckin(idTrip, bookingCode);
       if (data.status === StatusApiCall.Success) {
-        let seats = '';
-        data.data?.listTicket.map(item => {
-          seats = seats + item.seatName + ', ';
-        });
-        setCustomer({...data.data, seats});
+        setCustomer(data.data);
         onCheckinSuccess();
         return;
       }
 
       setMessage('Mã đặt vé không chính xác!');
-    } catch {
+    } catch (error) {
+      console.log('kkk', error);
+
+      setMessage('Mã đặt vé không chính xác hoặc đã được checkin');
       toast.show('Có lỗi xảy ra', {type: 'error'});
     } finally {
       setGetting(pre => pre.filter(item => item !== defaultBooking));
@@ -82,6 +81,7 @@ export const Checkin = ({
     setCustomer(null);
     setMessage('');
   };
+  console.log(message);
 
   return (
     <ReactNativeModal
@@ -150,15 +150,15 @@ export const Checkin = ({
             <Text style={{fontSize: 18, fontWeight: '800', marginBottom: 16}}>
               Thông tin khách hàng
             </Text>
-            <InfoItem label="Họ tên" value={customer?.userSystemDTO.fullName} />
-            <InfoItem label="Điểm lên" value={customer?.pickUpPoint} />
-            <InfoItem label="Điểm xuống" value={customer?.dropOffPoint} />
-            <InfoItem label="Trạng thái" value={customer?.bookingStatus} />
-            <InfoItem label="Số lượng vé" value={customer?.numberOfTickets} />
-            <InfoItem label="Số ghế ngồi" value={customer?.seats} />
+            <InfoItem label="Họ tên" value={customer?.customer.fullName} />
+            <InfoItem label="Điểm lên" value={customer?.onStation.name} />
+            <InfoItem label="Điểm xuống" value={customer?.offStation.name} />
+            <InfoItem label="Trạng thái" value={customer?.status} />
+            {/* <InfoItem label="Số lượng vé" value={customer?.numberOfTickets} /> */}
+            <InfoItem label="Số ghế ngồi" value={customer?.seatName} />
             <InfoItem
               label="Tổng thanh toán"
-              value={formatPrice(customer?.totalPrice ?? 0)}
+              value={formatPrice(customer?.price ?? 0)}
             />
           </View>
         </ScrollView>

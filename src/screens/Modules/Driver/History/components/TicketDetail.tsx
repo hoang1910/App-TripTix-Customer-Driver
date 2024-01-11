@@ -21,6 +21,7 @@ import {timeStampToUtc} from '@utils/time';
 import {useStore} from '@store';
 import {ConfigContext} from '@navigation';
 import {ListCustomerStation} from './ListCustomerStation';
+import {UnfinishedStatus} from '@constants/route';
 
 const utc = require('dayjs/plugin/utc');
 dayjs.extend(utc);
@@ -42,15 +43,16 @@ export const TicketDetail = ({
   const [stationInfo, setStationInfo] = useState(null);
   const [getting, setGetting] = useState<number[]>([]);
 
-  const steps = booking?.listtripStopDTO.map(item => {
-    const customersA = trip.listBooking.filter(
+  const steps = booking?.route?.listStationInRoute?.map((item, index) => {
+    const customersA = trip?.tickets?.filter(
       customer =>
-        customer.dropOffPoint === item.stationDTO.name ||
-        customer.pickUpPoint === item.stationDTO.name,
+        (customer.onStation.idStation === item.idStation ||
+          customer.offStation.idStation === item.idStation) &&
+        customer.status !== BookingStatusId.Cancel,
     );
 
-    const customers = customersA.map(customer => {
-      const seats = booking.seatNameBooking
+    const customers = customersA?.map(customer => {
+      const seats = booking.tickets
         .filter(seat => seat.idBooking === customer.idBooking)
         .map(seat => seat.seatName);
 
@@ -58,30 +60,25 @@ export const TicketDetail = ({
         ...customer,
         seats: seats.join(', '),
         type:
-          item.stationDTO.name === customer.pickUpPoint ? 'pickup' : 'dropOff',
+          item.idStation === customer.onStation.idStation
+            ? 'pickup'
+            : 'dropOff',
       };
     });
-    console.log('trip', trip);
-    const total = customers.reduce(
-      (acc, currentValue) =>
-        currentValue.type === 'dropOff'
-          ? acc + currentValue.numberOfTickets
-          : acc,
-      0,
-    );
-    const totalPickup = customers.reduce(
-      (acc, currentValue) =>
-        currentValue.type === 'pickup'
-          ? acc + currentValue.numberOfTickets
-          : acc,
-      0,
-    );
-    console.log('totalPickup', item.stationDTO.name, totalPickup);
+
+    const total = customers?.filter(item => item.type === 'dropOff').length;
+    const totalPickup = customers?.filter(
+      item => item.type === 'pickup',
+    ).length;
+
     return {
-      time: timeStampToUtc(item.timeComess).format('HH:mm'),
-      title: item.stationDTO.name,
+      time: item.timeCome,
+      title: item.station.name,
       icon: {
-        name: item.type === 'DROPOFF' ? 'location-on' : 'location-searching',
+        name:
+          index === booking?.route?.listStationInRoute.length - 1
+            ? 'location-on'
+            : 'location-searching',
         color: 'red',
       },
       desc:
@@ -97,12 +94,17 @@ export const TicketDetail = ({
     };
   });
 
-  const stationInfoDetail = steps.find(
-    item => item.stationDTO.idStation === stationInfo,
+  const stationInfoDetail = steps?.find(
+    item => item.station.idStation === stationInfo,
+  );
+  console.log('hhhh', trip);
+  const listSeats = Array.from(
+    {length: trip?.vehicle?.capacity},
+    (_, index) => `A${index + 1}`,
   );
 
-  const timeStart = dayjs(booking.startTimee * 1000, {utc: true});
-  const timeEnd = dayjs(booking.endTimee * 1000, {utc: true});
+  const timeStart = dayjs(booking.departureDateLT * 1000, {utc: true});
+  const timeEnd = dayjs(booking.endDateLT * 1000, {utc: true});
   const now = dayjs().add(7, 'hour').utc().format();
 
   const nowToStart = timeStart.diff(now, 'minute');
@@ -113,11 +115,10 @@ export const TicketDetail = ({
     defaultBooking: '',
   });
   const [showListCustomer, setShowListCustomer] = useState(false);
-  console.log('step:', steps);
+
   useEffect(() => {
     getTrip();
   }, []);
-  console.log(trip);
 
   const getTrip = async () => {
     try {
@@ -189,10 +190,14 @@ export const TicketDetail = ({
       setGetting(pre => pre.filter(item => item !== bookingId));
     }
   };
-  const totalPrice = trip.listBooking.reduce(
-    (acc, currentValue) => currentValue.totalPrice + acc,
+  const totalPrice = trip.tickets?.reduce(
+    (acc, currentValue) =>
+      currentValue.status !== BookingStatusId.Cancel
+        ? currentValue.price + acc
+        : acc,
     0,
   );
+
   return (
     <ReactNativeModal
       isVisible={show}
@@ -223,16 +228,16 @@ export const TicketDetail = ({
             <InfoItem
               label="Chuyến xe"
               value={
-                trip.routeDTO.departurePoint + ' - ' + trip.routeDTO.destination
+                trip.route?.departurePoint + ' - ' + trip.route?.destination
               }
             />
             <InfoItem
               label="Số xe"
-              value={trip.busDTO.licensePlates + ' - ' + trip.busDTO.name}
+              value={trip.vehicle?.licensePlates + ' - ' + trip.vehicle?.name}
             />
             <InfoItem
               label="Số lượng khách"
-              value={`${trip.bookedSeat}/${trip.busDTO.capacity}`}
+              value={`${trip.bookedSeat}/${trip.vehicle?.capacity}`}
             />
             <InfoItem label="Tổng tiền" value={formatPrice(totalPrice)} />
             <Text style={{flex: 1}}>{'Danh sách trạm'}</Text>
@@ -240,7 +245,7 @@ export const TicketDetail = ({
               <Steps
                 data={steps}
                 onPressItem={handlePressPoint}
-                disable={trip.status !== 'RUN'}
+                disable={trip.status !== BookingStatusId.Run}
               />
             </View>
           </View>
@@ -313,9 +318,11 @@ export const TicketDetail = ({
         <ListCustomer
           show={showListCustomer}
           onClose={() => setShowListCustomer(false)}
-          totalSeats={trip.busDTO.capacity}
-          listCustomer={trip.listBooking}
-          listSeat={trip.seatNameBooking}
+          totalSeats={trip.vehicle?.capacity}
+          listCustomer={trip.tickets?.filter(
+            item => item.status !== BookingStatusId.Cancel,
+          )}
+          listSeat={listSeats}
         />
       </SafeAreaView>
     </ReactNativeModal>

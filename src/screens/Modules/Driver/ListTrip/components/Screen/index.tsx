@@ -81,8 +81,8 @@ export const Screen: React.FC<TScreenProps> = ({type}) => {
 
         const list = data.data.map(item => ({
           ...item,
-          day: timeStampToUtc(item.startTimee).format('DD/MM/YYYY'),
-          timestamp: timeStampToUtc(item.startTimee)
+          day: timeStampToUtc(item.departureDateLT).format('DD/MM/YYYY'),
+          timestamp: timeStampToUtc(item.departureDateLT)
             .set('hour', 0)
             .set('minute', 0)
             .set('second', 0)
@@ -160,7 +160,7 @@ export const Screen: React.FC<TScreenProps> = ({type}) => {
                 }}>
                 <Text>Giờ xuất bến</Text>
                 <Text style={{fontSize: 18, fontWeight: 'bold', color: 'red'}}>
-                  {timeStampToUtc(item.startTimee).format('HH:mm')}
+                  {timeStampToUtc(item.departureDateLT).format('HH:mm')}
                 </Text>
                 <Text
                   style={{
@@ -173,18 +173,22 @@ export const Screen: React.FC<TScreenProps> = ({type}) => {
                 </Text>
               </View>
               <View style={{flex: 2, paddingLeft: 8}}>
-                <InfoItem label="Xe" value={item.busDTO.name} />
+                <InfoItem label="Xe" value={item.vehicle?.name} />
                 <InfoItem
                   icon={{name: 'my-location', color: 'green'}}
-                  value={item.routeDTO.departurePoint}
+                  value={item.route?.departurePoint}
                 />
                 <InfoItem
                   icon={{name: 'location-on', color: 'orange'}}
-                  value={item.routeDTO.destination}
+                  value={item.route?.destination}
                 />
                 <InfoItem
                   label="Tổng số khách"
-                  value={`${item.listBooking.length}/${item.busDTO.capacity}`}
+                  value={`${
+                    item.tickets?.filter(
+                      item => item.status !== BookingStatusId.Cancel,
+                    ).length
+                  }/${item.vehicle?.capacity}`}
                 />
               </View>
             </View>
