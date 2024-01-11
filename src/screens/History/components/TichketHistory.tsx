@@ -200,9 +200,9 @@ export default function TichketHistory({
                 onPressFeedback={(t: any) => setFeedback(t)}
                 onPressInfo={(t: any) => setDetail(t)}
                 canceling={canceling}
-                timeStart={ticket.trip.departureDateStr}
-                departurePoint={ticket.pickUpPoint}
-                destination={ticket.dropOffPoint}
+                timeStart={ticket.trip.departureDate}
+                departurePoint={ticket.onStation.name}
+                destination={ticket.offStation.name}
                 status={ticket.status}
               />
             ))}

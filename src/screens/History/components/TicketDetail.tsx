@@ -99,34 +99,35 @@ export const TicketDetail = ({
           Thông tin chuyến đi
         </Text>
         <View style={{ alignItems: "center", marginVertical: 16 }}>
-          <QRCode value={booking.bookingCode} />
+          <QRCode value={booking.ticketCodeImg} />
         </View>
 
         <View style={{ marginBottom: 16 }}>
-          <InfoItem label="Mã đặt vé" value={booking.bookingCode} />
+          <InfoItem label="Mã đặt vé" value={booking.ticketCode} />
           <InfoItem
             label="Tuyến xe"
-            value={`${booking.tripDTO?.routeDTO.departurePoint} - ${booking.tripDTO?.routeDTO.destination}`}
+            value={`${booking.trip.nameRoute}`}
           />
           <InfoItem
             label="Giờ khởi hành"
-            value={timeStampToUtc(booking?.tripDTO?.startTimee).format(
+            value={timeStampToUtc(booking?.trip?.departureDate).format(
               "HH:mm - DD/MM/YYYY"
             )}
           />
-          <InfoItem label="Tổng số ghế" value={booking.listTicket.length} />
+          {/* <InfoItem label="Tổng số ghế" value={booking.listTicket.length} /> */}
           <InfoItem
             label="Mã số ghế"
-            value={booking.listTicket.map((item) => item.seatName).join(" ,")}
-          />
-          <InfoItem label="Điểm đón" value={booking.pickUpPoint} />
-          <InfoItem label="Điểm xuống" value={booking.dropOffPoint} />
+            // value={booking.listTicket.map((item) => item.seatName).join(" ,")}
+            value={booking.seatName}
+          />  
+          <InfoItem label="Điểm đón" value={booking.onStation.name} />
+          <InfoItem label="Điểm xuống" value={booking.offStation.name} />
           <InfoItem
             label="Tổng thanh toán"
-            value={formatPrice(booking.totalPrice)}
+            value={formatPrice(booking.price)}
           />
         </View>
-        <View style={{ marginBottom: 16 }}>
+        {/* <View style={{ marginBottom: 16 }}>
           <InfoItem label="Tên xe" value={booking.tripDTO?.busDTO.name} />
           <InfoItem
             label="Biển số xe"
@@ -145,7 +146,7 @@ export const TicketDetail = ({
             value={booking.tripDTO?.driverDTO.fullName}
           />
           <InfoItem label="SĐT" value={booking.tripDTO?.driverDTO.phone} />
-        </View>
+        </View> */}
       </ScrollView>
     </ReactNativeModal>
   );
