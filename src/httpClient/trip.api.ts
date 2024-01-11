@@ -83,7 +83,7 @@ const getHistoryDriver = (driverId: number, time: number) => {
 
 const putCheckin = (idTrip: number, bookingCode: string) => {
   return httpClient.put(
-    `${routes.trip.putCheckin}?idTrip=${idTrip}&bookingCode=${bookingCode}`,
+    `${routes.trip.putCheckin}?idTrip=${idTrip}&ticketCode=${bookingCode}`,
   );
 };
 
@@ -149,8 +149,10 @@ const getPriceTicket = (
   );
 };
 
-const putCheckout = (idBooking: number) => {
-  return httpClient.put(`${routes.trip.checkout}?idBooking=${idBooking}`);
+const putCheckout = (idTrip: number, idBooking: number) => {
+  return httpClient.put(
+    `${routes.trip.checkout}?idTrip =${idTrip}&ticketCode=${idBooking}`,
+  );
 };
 
 export {

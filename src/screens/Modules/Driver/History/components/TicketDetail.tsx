@@ -48,7 +48,7 @@ export const TicketDetail = ({
         customer.dropOffPoint === item.stationDTO.name ||
         customer.pickUpPoint === item.stationDTO.name,
     );
-      
+
     const customers = customersA.map(customer => {
       const seats = booking.seatNameBooking
         .filter(seat => seat.idBooking === customer.idBooking)
@@ -61,18 +61,22 @@ export const TicketDetail = ({
           item.stationDTO.name === customer.pickUpPoint ? 'pickup' : 'dropOff',
       };
     });
-    console.log("trip",trip);
+    console.log('trip', trip);
     const total = customers.reduce(
       (acc, currentValue) =>
-        currentValue.type === 'dropOff' ? acc + currentValue.numberOfTickets : acc ,
+        currentValue.type === 'dropOff'
+          ? acc + currentValue.numberOfTickets
+          : acc,
       0,
     );
     const totalPickup = customers.reduce(
       (acc, currentValue) =>
-        currentValue.type === 'pickup' ? acc + currentValue.numberOfTickets : acc,
+        currentValue.type === 'pickup'
+          ? acc + currentValue.numberOfTickets
+          : acc,
       0,
     );
-      console.log("totalPickup",item.stationDTO.name ,totalPickup);
+    console.log('totalPickup', item.stationDTO.name, totalPickup);
     return {
       time: timeStampToUtc(item.timeComess).format('HH:mm'),
       title: item.stationDTO.name,
@@ -109,7 +113,7 @@ export const TicketDetail = ({
     defaultBooking: '',
   });
   const [showListCustomer, setShowListCustomer] = useState(false);
-  console.log("step:",steps);
+  console.log('step:', steps);
   useEffect(() => {
     getTrip();
   }, []);
@@ -173,7 +177,7 @@ export const TicketDetail = ({
   const handleCheckout = async (bookingId: number) => {
     try {
       setGetting(pre => [...pre, bookingId]);
-      const {data} = await putCheckout(bookingId);
+      const {data} = await putCheckout(booking.idTrip, bookingId);
       if (data.status === StatusApiCall.Success) {
         await getTrip();
         return;
@@ -185,11 +189,10 @@ export const TicketDetail = ({
       setGetting(pre => pre.filter(item => item !== bookingId));
     }
   };
-  const totalPrice = trip.listBooking.reduce( 
-    (acc, currentValue) =>
-        currentValue.totalPrice + acc,  
+  const totalPrice = trip.listBooking.reduce(
+    (acc, currentValue) => currentValue.totalPrice + acc,
     0,
-);
+  );
   return (
     <ReactNativeModal
       isVisible={show}
@@ -231,12 +234,7 @@ export const TicketDetail = ({
               label="Số lượng khách"
               value={`${trip.bookedSeat}/${trip.busDTO.capacity}`}
             />
-            <InfoItem
-              label="Tổng tiền"
-              value={formatPrice(
-               totalPrice
-              )}
-            />
+            <InfoItem label="Tổng tiền" value={formatPrice(totalPrice)} />
             <Text style={{flex: 1}}>{'Danh sách trạm'}</Text>
             <View style={{marginBottom: 4}}>
               <Steps
