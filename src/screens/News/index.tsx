@@ -22,6 +22,7 @@ export const News: React.FC = () => {
 
       if (data.status === StatusApiCall.Success) {
         setData(data.data);
+        console.log(data);
       }
     } finally {
       setLoading(false);
@@ -63,7 +64,7 @@ export const News: React.FC = () => {
         }}
       >
         <Image
-          source={{uri: item.listImg[0]}}
+          source={{uri: item.imgLink}}
           style={{width: '100%', height: 150}}
         />
         <View style={{

@@ -127,26 +127,23 @@ export const TicketDetail = ({
             value={formatPrice(booking.price)}
           />
         </View>
-        {/* <View style={{ marginBottom: 16 }}>
-          <InfoItem label="Tên xe" value={booking.tripDTO?.busDTO.name} />
+        <View style={{ marginBottom: 16 }}>
+          <InfoItem label="Tên xe" value={booking.trip?.vehicleDTO.name} />
           <InfoItem
             label="Biển số xe"
-            value={booking.tripDTO?.busDTO.licensePlates}
+            value={booking.trip?.vehicleDTO.licensePlates}
           />
           <InfoItem
             label="Loại xe"
-            value={CarTypes[booking.tripDTO?.busDTO.type]}
+            value={booking.trip?.vehicleDTO.type}
           />
-          <InfoItem
-            label="Ghi chú"
-            value={booking.tripDTO?.busDTO.description}
-          />
+          
           <InfoItem
             label="Tài xế"
-            value={booking.tripDTO?.driverDTO.fullName}
+            value={booking.trip?.driverDTO.fullName}
           />
-          <InfoItem label="SĐT" value={booking.tripDTO?.driverDTO.phone} />
-        </View> */}
+          <InfoItem label="SĐT" value={booking.trip?.driverDTO.phone} />
+        </View>
       </ScrollView> 
     </ReactNativeModal>
   );
