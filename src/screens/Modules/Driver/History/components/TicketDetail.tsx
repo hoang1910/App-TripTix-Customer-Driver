@@ -237,7 +237,11 @@ export const TicketDetail = ({
             />
             <InfoItem
               label="Số lượng khách"
-              value={`${trip.bookedSeat}/${trip.vehicle?.capacity}`}
+              value={`${
+                trip.tickets?.map(
+                  item => item.status !== BookingStatusId.Cancel,
+                ).length
+              }/${trip.vehicle?.capacity}`}
             />
             <InfoItem label="Tổng tiền" value={formatPrice(totalPrice)} />
             <Text style={{flex: 1}}>{'Danh sách trạm'}</Text>

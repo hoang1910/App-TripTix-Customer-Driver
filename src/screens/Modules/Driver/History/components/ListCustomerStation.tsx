@@ -183,7 +183,7 @@ const InfoItem = ({
         {status === BookingStatusId.Checkin && type === 'dropOff' && (
           <TouchableOpacity
             disabled={loading}
-            onPress={() => onPressCheckout(bookingId)}
+            onPress={() => onPressCheckout(bookingCode)}
             style={{
               padding: 6,
               borderRadius: 6,

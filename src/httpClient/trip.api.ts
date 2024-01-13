@@ -150,7 +150,7 @@ const getPriceTicket = (
 
 const putCheckout = (idTrip: number, idBooking: number) => {
   return httpClient.put(
-    `${routes.trip.checkout}?idTrip =${idTrip}&ticketCode=${idBooking}`,
+    `${routes.trip.checkout}?idTrip=${idTrip}&ticketCode=${idBooking}`,
   );
 };
 

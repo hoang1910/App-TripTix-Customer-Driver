@@ -25,7 +25,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {registerForPushNotificationsAsync} from '@utils/app';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import {storage} from '@storage/index';
-import { data } from 'screens/SelectRoute/constant';
+import {data} from 'screens/SelectRoute/constant';
 
 const schema = yup.object().shape({
   fullName: yup
@@ -120,7 +120,7 @@ export const Info: React.FC = () => {
           flexDirection: 'column',
           padding: 0,
           paddingLeft: 20,
-          paddingRight: 20
+          paddingRight: 20,
         }}>
         <ScrollView style={{flex: 1}}>
           <View
@@ -160,8 +160,7 @@ export const Info: React.FC = () => {
                   value={value}
                   onChangeText={onChange}
                   errorMessage={errors.fullName?.message}
-                  style={{fontFamily:'SVN-Gilroy-Medium'}}
-                  
+                  style={{fontFamily: 'SVN-Gilroy-Medium'}}
                 />
               )}
             />
@@ -174,7 +173,7 @@ export const Info: React.FC = () => {
                   value={value}
                   onChangeText={onChange}
                   errorMessage={errors.email?.message}
-                  style={{fontFamily:'SVN-Gilroy-Medium'}}
+                  style={{fontFamily: 'SVN-Gilroy-Medium'}}
                 />
               )}
             />
@@ -187,8 +186,7 @@ export const Info: React.FC = () => {
                   value={value}
                   onChangeText={onChange}
                   errorMessage={errors.phone?.message}
-                  style={{fontFamily:'SVN-Gilroy-Medium'}}
-
+                  style={{fontFamily: 'SVN-Gilroy-Medium'}}
                 />
               )}
             />
@@ -212,8 +210,10 @@ export const Info: React.FC = () => {
                         borderColor: '#ccc',
                         marginBottom: 20,
                       }}>
-                      <Text style={{fontSize: 18,fontFamily:'SVN-Gilroy-Medium'}}>{title}</Text>
-
+                      <Text
+                        style={{fontSize: 18, fontFamily: 'SVN-Gilroy-Medium'}}>
+                        {title}
+                      </Text>
                     </TouchableOpacity>
                   )}
                 />
@@ -239,7 +239,7 @@ export const Info: React.FC = () => {
                   value={value}
                   onChangeText={onChange}
                   errorMessage={errors.address?.message}
-                  style={{fontSize: 18,fontFamily:'SVN-Gilroy-Medium'}}
+                  style={{fontSize: 18, fontFamily: 'SVN-Gilroy-Medium'}}
                 />
               )}
             />
