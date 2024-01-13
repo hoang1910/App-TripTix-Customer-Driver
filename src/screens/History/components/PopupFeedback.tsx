@@ -1,45 +1,43 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import ReactNativeModal from "react-native-modal";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { AirbnbRating, Input } from "@rneui/themed";
-import { useForm, Controller } from "react-hook-form";
+import {View, Text, TouchableOpacity} from 'react-native';
+import ReactNativeModal from 'react-native-modal';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AirbnbRating, Input} from '@rneui/themed';
+import {useForm, Controller} from 'react-hook-form';
 
 export const PopupFeedback = ({
   ticket,
   onClose = () => {},
   onConfirm,
   show,
+  defaultVa = 5,
 }) => {
-  const { control, handleSubmit } = useForm({
-    defaultValues: { star: 5, feedback: "" },
+  const {control, handleSubmit} = useForm({
+    defaultValues: {star: defaultVa, feedback: ''},
   });
 
   return (
     <ReactNativeModal isVisible={show}>
-      <View style={{ backgroundColor: "#fff", borderRadius: 20 }}>
+      <View style={{backgroundColor: '#fff', borderRadius: 20}}>
         <TouchableOpacity
           onPress={onClose}
           style={{
             padding: 4,
-            position: "absolute",
+            position: 'absolute',
             right: 10,
             top: 10,
             zIndex: 10,
-          }}
-        >
-          <Icon name="close-circle" size={24} color={"#ccc"} />
+          }}>
+          <Icon name="close-circle" size={24} color={'#ccc'} />
         </TouchableOpacity>
-        <View style={{ padding: 20 }}>
-          <Text
-            style={{ fontSize: 18, fontWeight: "800", textAlign: "center" }}
-          >
+        <View style={{padding: 20}}>
+          <Text style={{fontSize: 18, fontWeight: '800', textAlign: 'center'}}>
             Bạn đánh sao về chuyến đi này?
           </Text>
-          <View style={{ alignItems: "center" }}>
+          <View style={{alignItems: 'center'}}>
             <Controller
               control={control}
               name="star"
-              render={({ field: { value, onChange } }) => (
+              render={({field: {value, onChange}}) => (
                 <AirbnbRating defaultRating={value} onFinishRating={onChange} />
               )}
             />
@@ -60,25 +58,23 @@ export const PopupFeedback = ({
         </View>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
             borderTopWidth: 1,
-            borderTopColor: "#ccc",
-          }}
-        >
+            borderTopColor: '#ccc',
+          }}>
           <TouchableOpacity
             onPress={handleSubmit((value: any) =>
-              onConfirm(ticket.idTicket, value.star)
+              onConfirm(ticket.idTicket, value.star),
             )}
             style={{
               paddingVertical: 16,
               paddingHorizontal: 4,
               flex: 1,
-              alignItems: "center",
+              alignItems: 'center',
               borderRightWidth: 1,
-              borderRightColor: "#ccc",
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: "900" }}>Đánh giá</Text>
+              borderRightColor: '#ccc',
+            }}>
+            <Text style={{fontSize: 16, fontWeight: '900'}}>Đánh giá</Text>
           </TouchableOpacity>
         </View>
       </View>

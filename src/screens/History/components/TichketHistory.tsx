@@ -91,21 +91,21 @@ export default function TichketHistory({
   useEffect(() => {
     if (listTicket) {
       if (type == 'history') {
-        const history = listTicket
-          .filter(item => {
-            return CompletedStatus.includes(item.status);
-          })
-          // .sort((a, b) => {
-          //   return b.updatedDate - a.updatedDate;
-          // });
+        const history = listTicket.filter(item => {
+          return CompletedStatus.includes(item.status);
+        });
+        // .sort((a, b) => {
+        //   return b.updatedDate - a.updatedDate;
+        // });
         setData(history);
       }
       if (type == 'perpare') {
-        const perpare = listTicket
-          .filter(item => UnfinishedStatus.includes(item.status))
-          // .sort((a, b) => {
-          //   return a.trip?.departureDate - b.trip?.departureDate;
-          // });
+        const perpare = listTicket.filter(item =>
+          UnfinishedStatus.includes(item.status),
+        );
+        // .sort((a, b) => {
+        //   return a.trip?.departureDate - b.trip?.departureDate;
+        // });
         setData(perpare);
       }
     }
@@ -223,6 +223,7 @@ export default function TichketHistory({
           onConfirm={handleFeedback}
           onClose={() => setFeedback(false)}
           ticket={feedback}
+          defaultVa={feedback.star}
         />
       )}
     </View>
