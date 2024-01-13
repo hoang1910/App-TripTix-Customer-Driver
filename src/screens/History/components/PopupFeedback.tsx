@@ -67,7 +67,7 @@ export const PopupFeedback = ({
         >
           <TouchableOpacity
             onPress={handleSubmit((value: any) =>
-              onConfirm(ticket.idBooking, value.star)
+              onConfirm(ticket.idTicket, value.star)
             )}
             style={{
               paddingVertical: 16,

@@ -25,6 +25,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {registerForPushNotificationsAsync} from '@utils/app';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import {storage} from '@storage/index';
+import { data } from 'screens/SelectRoute/constant';
 
 const schema = yup.object().shape({
   fullName: yup
@@ -71,14 +72,14 @@ export const Info: React.FC = () => {
       fullName: userInfo.fullName,
       phone: userInfo.phone,
       address: userInfo.address,
-      birthday: new Date(userInfo.birthday * 1000),
+      birthday: new Date(userInfo.birthdayLong * 1000),
       gender: userInfo.gender,
       email: userInfo.email,
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-
+  console.log(userInfo);
   const onClickUpdate = async (dataForm: any) => {
     try {
       setIsUpdate(true);

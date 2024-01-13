@@ -84,10 +84,10 @@ export default function TichketHistory({
   const toast = useToast();
   const dataFilter = useMemo(() => {
     return data.filter(item => {
-      return statusFilter ? item.bookingStatus === statusFilter : true;
+      return statusFilter ? item.status === statusFilter : true;
     });
   }, [data, statusFilter]);
-
+  console.log(dataFilter);
   useEffect(() => {
     if (listTicket) {
       if (type == 'history') {
@@ -95,17 +95,17 @@ export default function TichketHistory({
           .filter(item => {
             return CompletedStatus.includes(item.status);
           })
-          .sort((a, b) => {
-            return b.updatedDate - a.updatedDate;
-          });
+          // .sort((a, b) => {
+          //   return b.updatedDate - a.updatedDate;
+          // });
         setData(history);
       }
       if (type == 'perpare') {
         const perpare = listTicket
           .filter(item => UnfinishedStatus.includes(item.status))
-          .sort((a, b) => {
-            return a.trip?.departureDate - b.trip?.departureDate;
-          });
+          // .sort((a, b) => {
+          //   return a.trip?.departureDate - b.trip?.departureDate;
+          // });
         setData(perpare);
       }
     }
