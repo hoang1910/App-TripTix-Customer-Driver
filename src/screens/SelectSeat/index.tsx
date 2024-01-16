@@ -37,18 +37,30 @@ export const SelectSeat: React.FC = () => {
   } = useStore();
   const maxSeat = config?.maxSeat ?? 5;
 
-  const {fromId, toId, isRound} =
+  const {fromId, toId, isRound, comboSeatStations, onChoose, seats} =
     useRoute<TAppRoute<'SelectSeat'>>().params || {};
+
+  console.log('comboSeatStations', comboSeatStations);
+  console.log('seats', seats);
+
   const routeInfo = isRound ? routeRoundInfo : route;
-  const [listSelectSeat, setListSelectSeat] = useState([]);
+  const [listSelectSeat, setListSelectSeat] = useState(seats);
+  console.log('listSelectSeat', listSelectSeat);
+  const totalSeat =
+    comboSeatStations.reduce((total, currentItem) => {
+      return total + currentItem.seatName?.length;
+    }, 0) + listSelectSeat?.length;
+
+  console.log('totalSeat', totalSeat);
+
   const [showError, setShowError] = useState(false);
   const toast = useToast();
   const [map, setMap] = useState<any[]>([]);
   const price = isRound ? pricePerSeatRound : pricePerSeat;
 
-  useEffect(() => {
-    setListSelectSeat((isRound ? seatSelectedRound : seatSelected) ?? []);
-  }, [isRound]);
+  // useEffect(() => {
+  //   setListSelectSeat((isRound ? seatSelectedRound : seatSelected) ?? []);
+  // }, [isRound]);
 
   useEffect(() => {
     getData();
@@ -57,7 +69,7 @@ export const SelectSeat: React.FC = () => {
   const getData = async () => {
     try {
       const [resSeat, resPrice] = await Promise.all([
-        getSeatUnavailable(fromId, toId, routeInfo.idTrip),
+        getSeatUnavailable(fromId, toId, routeInfo.idTrip, comboSeatStations),
         getPriceTicket(fromId, toId, routeInfo.idTrip),
       ]);
 
@@ -91,7 +103,7 @@ export const SelectSeat: React.FC = () => {
       return;
     }
 
-    if (listSelectSeat.length >= maxSeat) {
+    if (totalSeat >= maxSeat) {
       toast.show(`Bạn chỉ được đặt tối đa ${maxSeat} vé`, {
         type: 'danger',
       });
@@ -102,7 +114,9 @@ export const SelectSeat: React.FC = () => {
   };
 
   const onDepartureInfo = () => {
-    setSeatSelected(listSelectSeat, {isRound});
+    onChoose(listSelectSeat, price);
+    // setSeatSelected(listSelectSeat, {isRound});
+
     // const pickUp = routeInfo.listtripStopDTO.find(item => item.index === 0);
     // const dropOff = routeInfo.listtripStopDTO.find(item => item.index === 1);
     // setUserInformation({

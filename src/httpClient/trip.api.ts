@@ -38,11 +38,11 @@ const getRouteInfo = (departurePoint: string, destination: string) =>
 const postBookTicket = (data: {
   idTrip: number;
   idCustomer: number;
-  codePickUpPoint: number;
-  codeDropOffPoint: number;
-  seatName: string[];
-  phoneGuest: string;
-  nameGuest: string;
+  listTicket: {
+    codePickUpPoint: number;
+    codeDropOffPoint: number;
+    seatName: string[];
+  }[];
 }) => httpClient.post(routes.trip.postBookTicket, data);
 
 const postBookTicketRound = (data: {
@@ -132,10 +132,18 @@ const getSeatUnavailable = (
   pickUpId: number,
   stationId: number,
   tripId: number,
+  comboSeatStations: {
+    codePickUpPoint: number;
+    codeDropOffPoint: number;
+    seatName: string[];
+  }[],
 ) => {
-  return httpClient.get(
-    `${routes.trip.getSeatUnavailable}?idStationPickUp=${pickUpId}&idStationDropOff=${stationId}&idTrip=${tripId}`,
-  );
+  return httpClient.put(routes.trip.getSeatUnavailable, {
+    idStationPickUp: pickUpId,
+    idStationDropOff: stationId,
+    idTrip: tripId,
+    comboSeatStations,
+  });
 };
 
 const getPriceTicket = (

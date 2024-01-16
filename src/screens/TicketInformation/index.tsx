@@ -37,6 +37,8 @@ export const TicketInformation: React.FC = () => {
     },
     authentication: {userInfo, synchUserInfo},
   } = useStore();
+  console.log('userInformation', JSON.stringify(userInformation.datas));
+
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -56,6 +58,14 @@ export const TicketInformation: React.FC = () => {
   const dropOff = routeInfo.listtripStopDTO.find(
     item => String(item.id) === String(userInformation.dropOffId),
   );
+  const _pickup = (pickUpId: number) =>
+    routeInfo.listtripStopDTO.find(
+      item => String(item.id) === String(pickUpId),
+    );
+  const _dropOff = (dropOffId: number) =>
+    routeInfo.listtripStopDTO.find(
+      item => String(item.id) === String(dropOffId),
+    );
   const pickupRound = routeRoundInfo?.listtripStopDTO.find(
     item => String(item.id) === String(userInformation.pickUpIdRound),
   );
@@ -63,18 +73,20 @@ export const TicketInformation: React.FC = () => {
     item => String(item.id) === String(userInformation.dropOffIdRound),
   );
 
-  const listOfPassingStations = routeInfo.listtripStopDTO.filter(item => {
-    return item.index >= pickup.index && item.index <= dropOff.index;
-  });
-  const listOfPassingStationsRound = routeRoundInfo?.listtripStopDTO.filter(
-    item => {
-      return (
-        item.index >= pickupRound.index && item.index <= dropOffRound.index
-      );
-    },
-  );
+  // const listOfPassingStations = routeInfo.listtripStopDTO.filter(item => {
+  //   return item.index >= pickup.index && item.index <= dropOff.index;
+  // });
+  // const listOfPassingStationsRound = routeRoundInfo?.listtripStopDTO.filter(
+  //   item => {
+  //     return (
+  //       item.index >= pickupRound.index && item.index <= dropOffRound.index
+  //     );
+  //   },
+  // );
 
-  const totalPrice = pricePerSeat * seatSelected.length;
+  const totalPrice = userInformation.datas?.reduce((total, currentItem) => {
+    return total + currentItem.seats.length * currentItem.price;
+  }, 0);
 
   const totalPriceRound = isRound
     ? pricePerSeatRound * seatSelectedRound?.length
@@ -100,11 +112,11 @@ export const TicketInformation: React.FC = () => {
         : {
             idTrip: routeInfo.idTrip,
             idCustomer: userInfo.idUserSystem,
-            codePickUpPoint: pickup.id,
-            codeDropOffPoint: dropOff.id,
-            seatName: seatSelected,
-            phoneGuest: userInformation.phone,
-            nameGuest: userInformation.name,
+            listTicket: userInformation.datas?.map(item => ({
+              codePickUpPoint: item.pickUpId,
+              codeDropOffPoint: item.dropOffId,
+              seatName: item.seats,
+            })),
           };
       const {data} = isRound
         ? await postBookTicketRound(params)
@@ -174,7 +186,7 @@ export const TicketInformation: React.FC = () => {
           ]}
         />
         <Box
-          title="Thông tin chuyến xe - Chiều đi"
+          title="Thông tin chuyến xe"
           data={[
             {
               label: 'Tuyến',
@@ -190,13 +202,37 @@ export const TicketInformation: React.FC = () => {
                 'HH:mm - DD/MM/YYYY',
               ),
             },
-            {label: 'Số vé', value: seatSelected.length},
-            {label: 'Đơn giá', value: formatPrice(pricePerSeat)},
-            {label: 'Số ghế', value: seatSelected.join(' ,')},
-            {label: 'Điểm đón', value: pickup?.title},
-            {label: 'Điểm trả', value: dropOff?.title},
           ]}
         />
+        {userInformation.datas.map((item, index) => (
+          <Box
+            key={index}
+            title={`Thông tin điểm đón ${index + 1}`}
+            data={[
+              {
+                label: 'Điểm đón',
+                value: _pickup(item.pickUpId)?.title,
+              },
+              {
+                label: 'Điểm trả',
+                value: _pickup(item.dropOffId)?.title,
+              },
+              {
+                label: 'Số ghế',
+                value: item.seats?.join(', '),
+              },
+              {
+                label: 'Đơn giá',
+                value: formatPrice(item.price),
+              },
+              {
+                label: 'Tổng',
+                value: formatPrice(item.seats?.length * item.price),
+              },
+            ]}
+          />
+        ))}
+
         {!!routeRoundInfo && (
           <Box
             title="Thông tin chuyến xe - Chiều về"
