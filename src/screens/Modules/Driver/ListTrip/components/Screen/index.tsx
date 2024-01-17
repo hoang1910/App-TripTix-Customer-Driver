@@ -51,7 +51,7 @@ export const Screen: React.FC<TScreenProps> = ({type}) => {
     });
     return hihi;
   }, [data]);
-
+ console.log("helloo",data);
   useEffect(() => {
     getData();
   }, [configs.page]);
@@ -188,7 +188,7 @@ export const Screen: React.FC<TScreenProps> = ({type}) => {
                     item.tickets?.filter(
                       item => item.status !== BookingStatusId.Cancel,
                     ).length
-                  }/${item.vehicle?.capacity}`}
+                  }`}
                 />
               </View>
             </View>

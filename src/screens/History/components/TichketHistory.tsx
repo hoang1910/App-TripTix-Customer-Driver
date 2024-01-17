@@ -140,7 +140,14 @@ export default function TichketHistory({
 
   const handleFeedback = async (idTicket: number, star: number) => {
     setFeedback(null);
-    putFeedback(idTicket, star);
+    const {data} = await putFeedback(idTicket, star);
+
+    if (data.status === StatusApiCall.Success) {
+      toast.show(
+        `đánh giá sao thành công`,
+      );
+      onRefresh();
+    }
   };
 
   return (

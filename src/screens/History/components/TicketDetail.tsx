@@ -143,6 +143,8 @@ export const TicketDetail = ({
             value={booking.trip?.driverDTO.fullName}
           />
           <InfoItem label="SĐT" value={booking.trip?.driverDTO.phone} />
+          <InfoItem label="Đánh giá sao" value={booking.star} />
+
         </View>
       </ScrollView> 
     </ReactNativeModal>
