@@ -38,6 +38,9 @@ export const ListCustomerStation = ({
 }) => {
   const pickup = customers.filter(item => item.type === 'pickup');
   const dropOff = customers.filter(item => item.type === 'dropOff');
+  const showCheckin = pickup.some(
+    item => item.status === BookingStatusId.NoCheckin,
+  );
 
   return (
     <ReactNativeModal
@@ -63,11 +66,36 @@ export const ListCustomerStation = ({
         <Text style={{fontSize: 18, fontWeight: '800', textAlign: 'center'}}>
           {stationName}
         </Text>
-        <ScrollView style={{flex: 1}}>
+        <ScrollView style={{flex: 1, marginTop: 10}}>
           <View>
-            <Text style={{fontSize: 18, fontWeight: '600', marginBottom: 12}}>
-              Lên trạm
-            </Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={{fontSize: 18, fontWeight: '600', marginBottom: 12}}>
+                Lên trạm
+              </Text>
+              {showCheckin && (
+                <TouchableOpacity
+                  disabled={loading.length > 0}
+                  onPress={() => onPressCheckin(123)}
+                  style={{
+                    padding: 6,
+                    borderRadius: 6,
+                    backgroundColor: 'orange',
+                    width: 80,
+                    height: 32,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {loading.length > 0 ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <Text style={{color: 'blue'}} numberOfLines={1}>
+                      Check-in
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              )}
+            </View>
             {pickup?.map((item, index) => (
               <InfoItem
                 key={index}
@@ -135,7 +163,7 @@ const InfoItem = ({
   type: string;
   loading: boolean;
 }) => {
-  console.log(bookingCode);
+  console.log('status', BookingStatusLabel[status]);
 
   return (
     <View
@@ -157,28 +185,31 @@ const InfoItem = ({
         </Text>
       </View>
 
-      <View>
-        {status === BookingStatusId.NoCheckin && type === 'pickup' && (
-          <TouchableOpacity
-            disabled={loading}
-            onPress={() => onPressCheckin(bookingId)}
-            style={{
-              padding: 6,
-              borderRadius: 6,
-              backgroundColor: 'orange',
-              width: 80,
-              height: 32,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            {loading ? (
-              <ActivityIndicator />
-            ) : (
-              <Text style={{color: 'blue'}} numberOfLines={1}>
-                Check-in
-              </Text>
-            )}
-          </TouchableOpacity>
+      <View style={{justifyContent: 'center'}}>
+        {type === 'pickup' && (
+          <Text style={{fontFamily: 'SVN-Gilroy-Medium', color: 'blue'}}>
+            {BookingStatusLabel[status]}
+          </Text>
+          // <TouchableOpacity
+          //   disabled={loading}
+          //   onPress={() => onPressCheckin(bookingId)}
+          //   style={{
+          //     padding: 6,
+          //     borderRadius: 6,
+          //     backgroundColor: 'orange',
+          //     width: 80,
+          //     height: 32,
+          //     justifyContent: 'center',
+          //     alignItems: 'center',
+          //   }}>
+          //   {loading ? (
+          //     <ActivityIndicator />
+          //   ) : (
+          //     <Text style={{color: 'blue'}} numberOfLines={1}>
+          //       Check-in
+          //     </Text>
+          //   )}
+          // </TouchableOpacity>
         )}
         {status === BookingStatusId.Checkin && type === 'dropOff' && (
           <TouchableOpacity

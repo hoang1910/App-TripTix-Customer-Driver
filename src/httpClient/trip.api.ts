@@ -80,9 +80,9 @@ const getHistoryDriver = (driverId: number, time: number) => {
   );
 };
 
-const putCheckin = (idTrip: number, bookingCode: string) => {
+const putCheckin = (idTrip: number, bookingCode: string, idStation: number) => {
   return httpClient.put(
-    `${routes.trip.putCheckin}?idTrip=${idTrip}&ticketCode=${bookingCode}`,
+    `${routes.trip.putCheckin}?idTrip=${idTrip}&ticketCode=${bookingCode}&idStationNow=${idStation}`,
   );
 };
 

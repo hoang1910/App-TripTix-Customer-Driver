@@ -172,7 +172,13 @@ export const TicketDetail = ({
 
   const handlePressCheckin = (bookingId: number) => {
     // setStationInfo(null);
-    setShowCheckin({show: true, defaultBooking: bookingId});
+
+    setShowCheckin({
+      show: true,
+      defaultBooking: bookingId,
+      stationId: stationInfoDetail.idStation,
+      stationName: stationInfoDetail.title,
+    });
   };
 
   const handleCheckout = async (bookingId: number) => {
@@ -286,13 +292,13 @@ export const TicketDetail = ({
               : ''}
           </Text>
         )}
-        {trip.status === BookingStatusId.Run && (
+        {/* {trip.status === BookingStatusId.Run && (
           <Button
             title={'Checkin'}
             onPress={() => setShowCheckin({show: true, defaultBooking: ''})}
             loading={loading}
           />
-        )}
+        )} */}
         {showButtonSuccess && (
           <Button
             title={'Hoàn thành chuyến'}
@@ -318,6 +324,8 @@ export const TicketDetail = ({
           idTrip={trip.idTrip}
           onCheckinSuccess={getTrip}
           setGetting={setGetting}
+          stationId={showCheckin.stationId}
+          stationName={showCheckin.stationName}
         />
         <ListCustomer
           show={showListCustomer}

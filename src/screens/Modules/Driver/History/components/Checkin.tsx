@@ -17,6 +17,8 @@ export const Checkin = ({
   onCheckinSuccess = () => {},
   defaultBooking,
   setGetting,
+  stationId,
+  stationName,
 }: {
   onClose: () => void;
   show: boolean;
@@ -24,6 +26,8 @@ export const Checkin = ({
   onCheckinSuccess: () => void;
   defaultBooking?: string;
   setGetting?: any;
+  stationId?: number;
+  stationName?: string;
 }) => {
   const [showQRScan, setShowQRScan] = useState(false);
   const [acceptCamera, setAcceptCamera] = useState(false);
@@ -56,7 +60,7 @@ export const Checkin = ({
     try {
       setLoading(true);
       setGetting(pre => [...pre, defaultBooking]);
-      const {data} = await putCheckin(idTrip, bookingCode);
+      const {data} = await putCheckin(idTrip, bookingCode, stationId);
       if (data.status === StatusApiCall.Success) {
         setCustomer(data.data);
         onCheckinSuccess();
@@ -67,7 +71,9 @@ export const Checkin = ({
     } catch (error) {
       console.log('kkk', error);
 
-      setMessage('Mã đặt vé không chính xác hoặc đã được checkin');
+      setMessage(
+        error.data?.message ?? 'Mã đặt vé không chính xác hoặc đã được checkin',
+      );
       toast.show('Có lỗi xảy ra', {type: 'error'});
     } finally {
       setGetting(pre => pre.filter(item => item !== defaultBooking));
@@ -107,6 +113,12 @@ export const Checkin = ({
           </TouchableOpacity>
           <Text style={{fontSize: 18, fontWeight: '800', textAlign: 'center'}}>
             Checkin
+          </Text>
+          <Text style={{fontSize: 14, fontWeight: '400', textAlign: 'center'}}>
+            Checkin cho khách lên từ trạm{' '}
+            <Text style={{fontWeight: '700', color: 'blue'}}>
+              {stationName}
+            </Text>
           </Text>
 
           <View
